@@ -7,5 +7,7 @@ namespace StudentApi.Models
         public APIDbContext(DbContextOptions option) : base(option) { }
 
         public DbSet<Student> Students { get; set; }
+
+        public DbSet<Course> Courses { get; set; }
     }
 }
