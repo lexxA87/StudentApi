@@ -19,14 +19,15 @@ namespace StudentApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
         {
-            return await _context.Courses.ToListAsync();
+            return await _context.Courses.Include(c => c.Students).ToListAsync();
         }
 
         // GET: api/Course/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Course>> GetCourse(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
+            Course? course = await _context.Courses.FindAsync(id);
+            _context.Students.Where(s => s.CourseId == course.Id).Load();
 
             if (course == null)
             {
@@ -41,7 +42,7 @@ namespace StudentApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCourse(int id, Course course)
         {
-            if (id != course.CourseId)
+            if (id != course.Id)
             {
                 return BadRequest();
             }
@@ -75,7 +76,7 @@ namespace StudentApi.Controllers
             _context.Courses.Add(course);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCourse", new { id = course.CourseId }, course);
+            return CreatedAtAction("GetCourse", new { id = course.Id }, course);
         }
 
         // DELETE: api/Course/5
@@ -96,7 +97,7 @@ namespace StudentApi.Controllers
 
         private bool CourseExists(int id)
         {
-            return _context.Courses.Any(e => e.CourseId == id);
+            return _context.Courses.Any(e => e.Id == id);
         }
     }
 }

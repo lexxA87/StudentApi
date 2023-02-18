@@ -19,7 +19,7 @@ namespace StudentApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
         {
-            return await _context.Students.ToListAsync();
+            return await _context.Students.Include(c => c.Course).ToListAsync();
         }
 
         // GET: api/Student/5
@@ -27,6 +27,7 @@ namespace StudentApi.Controllers
         public async Task<ActionResult<Student>> GetStudent(int id)
         {
             var student = await _context.Students.FindAsync(id);
+            _context.Courses.Where(c => c.Students.Contains(student)).Load();
 
             if (student == null)
             {
@@ -41,7 +42,7 @@ namespace StudentApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStudent(int id, Student student)
         {
-            if (id != student.StudentId)
+            if (id != student.Id)
             {
                 return BadRequest();
             }
@@ -75,7 +76,7 @@ namespace StudentApi.Controllers
             _context.Students.Add(student);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetStudent", new { id = student.StudentId }, student);
+            return CreatedAtAction("GetStudent", new { id = student.Id }, student);
         }
 
         // DELETE: api/Student/5
@@ -96,7 +97,7 @@ namespace StudentApi.Controllers
 
         private bool StudentExists(int id)
         {
-            return _context.Students.Any(e => e.StudentId == id);
+            return _context.Students.Any(e => e.Id == id);
         }
     }
 }

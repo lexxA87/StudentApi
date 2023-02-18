@@ -6,11 +6,14 @@ namespace StudentApi.Models
     public class Course
     {
         [Key]
-        public int CourseId { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [Column(TypeName = "nvarchar(250)")]
         public string CourseName { get; set; } = "";
+        [Column(TypeName = "nvarchar(250)")]
         public string CourseDescription { get; set; } = string.Empty;
+
+        public List<Student> Students { get; set; } = new();
     }
 }

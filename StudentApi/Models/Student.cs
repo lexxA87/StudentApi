@@ -6,7 +6,7 @@ namespace StudentApi.Models
     public class Student
     {
         [Key]
-        public int StudentId { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [Column(TypeName = "nvarchar(250)")]
@@ -15,5 +15,8 @@ namespace StudentApi.Models
         public int ContactNumber { get; set; }
 
         public int Age { get; set; }
+
+        public int? CourseId { get; set; }
+        public Course? Course { get; set; }
     }
 }
